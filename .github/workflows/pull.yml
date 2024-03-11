@@ -34,7 +34,7 @@ jobs:
       - name:  Push changes
         uses:  ad-m/github-push-action@master
         with:  
-          branch: release
+          branch: main
           github_token: ${{ secrets.MY_GIT_TOKEN }}
       - name: 创建发布文本
         run: |  
