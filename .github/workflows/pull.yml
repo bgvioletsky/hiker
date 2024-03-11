@@ -2,22 +2,16 @@ name: 发布版本
 
 on:
     workflow_dispatch:
-        inputs:
-          environment:
-            description: '版本'
-            required: true
-            default: 0.0.1
     push:
         branches:
-            - release
+            - main
 env:
   TZ: Asia/Shanghai
   UPLOAD_1: true 
-  XBS     : false
   
 jobs:
   build:
-    name: 下载
+    name: 创建
     runs-on: ubuntu-latest
 
     steps:
@@ -32,8 +26,8 @@ jobs:
     
       - name: commit
         run: |
-            git config --local user.email "44770157@qq.com"
-            git config --local user.name "bgcode"
+            git config --local user.email "${{ secrets.EMAIL }}"
+            git config --local user.name "${{ secrets.NAME }}"
             git pull
             git add version
             git commit -m "update ${{ env.bgcode }}"  
@@ -42,8 +36,7 @@ jobs:
         with:  
           branch: release
           github_token: ${{ secrets.MY_GIT_TOKEN }}
-      - name: 创建链接
-        id: ss
+      - name: 创建发布文本
         run: |  
             echo "版本${{ env.version }}">> release.txt
       - name: 发布到release
