@@ -24,10 +24,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 下载文件
-        run: |
-          wget https://raw.githubusercontent.com/bgvioletsky/DownloadApp/main/version.sh
-          chmod +x version.sh
       - name: 设置变量
         id: compile
         run: |
@@ -39,7 +35,8 @@ jobs:
             git config --local user.email "44770157@qq.com"
             git config --local user.name "bgcode"
             git pull
-            git add version.txt
+            git add version
+            git add ./js/*
             git commit -m "update ${{ env.bgcode }}"  
       - name:  Push changes
         uses:  ad-m/github-push-action@master
