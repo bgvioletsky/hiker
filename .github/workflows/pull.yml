@@ -40,7 +40,7 @@ jobs:
       - name:  Push changes
         uses:  ad-m/github-push-action@master
         with:  
-          branch: main
+          branch: release
           github_token: ${{ secrets.MY_GIT_TOKEN }}
       - name: 创建链接
         id: ss
