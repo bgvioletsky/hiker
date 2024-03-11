@@ -22,7 +22,7 @@ jobs:
         id: compile
         run: |
           echo "version=$(bash version.sh)" >> $GITHUB_ENV
-          echo "bgcode=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
+          echo "bgcode=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
     
       - name: commit
         run: |
