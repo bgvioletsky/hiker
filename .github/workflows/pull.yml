@@ -45,7 +45,7 @@ jobs:
       - name: 创建链接
         id: ss
         run: |  
-            echo "版本v${{ env.version }}">> release.txt
+            echo "版本${{ env.version }}">> release.txt
       - name: 发布到release
         uses: softprops/action-gh-release@v1
         with:
