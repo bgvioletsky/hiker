@@ -1,0 +1,58 @@
+name: 发布版本
+
+on:
+    workflow_dispatch:
+        inputs:
+          environment:
+            description: '版本'
+            required: true
+            default: 0.0.1
+    push:
+        branches:
+            - release
+env:
+  TZ: Asia/Shanghai
+  UPLOAD_1: true 
+  XBS     : false
+  
+jobs:
+  build:
+    name: 下载
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: 下载文件
+        run: |
+          wget https://raw.githubusercontent.com/bgvioletsky/DownloadApp/main/version.sh
+          chmod +x version.sh
+      - name: 设置变量
+        id: compile
+        run: |
+          echo "version=$(bash version.sh)" >> $GITHUB_ENV
+          echo "bgcode=$(date +'%Y.%m.%d-%H%M')" >> $GITHUB_ENV
+    
+      - name: commit
+        run: |
+            git config --local user.email "44770157@qq.com"
+            git config --local user.name "bgcode"
+            git pull
+            git add version.txt
+            git commit -m "update ${{ env.bgcode }}"  
+      - name:  Push changes
+        uses:  ad-m/github-push-action@master
+        with:  
+          branch: main
+          github_token: ${{ secrets.MY_GIT_TOKEN }}
+      - name: 创建链接
+        id: ss
+        run: |  
+            echo "版本v${{ env.version }}">> release.txt
+      - name: 发布到release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.version }}
+          body_path: release.txt
+          files: ./js/*
