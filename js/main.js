@@ -111,34 +111,6 @@ function Frist() {
             })
         }
         display.push({
-            title: fold === '1' ? '““””<b><span style="color: #F54343">∨</span></b>' : '““””<b><span style="color:' + Color + '">∧</span></b>',
-            url: $('#noLoading#').lazyRule((fold) => {
-                putMyVar('BgCode$fold', fold === '1' ? '0' : '1');
-                refreshPage(false);
-                return "hiker://empty";
-            }, fold),
-            col_type: 'scroll_button',
-        })
-
-        for (var i in categorys) {
-            display.push({
-                title: getMyVar('BgCode$listTab', datasource == "sougou" ? 'teleplay' : '2') === listTabs[i] ? '““””<b><span style="color:' + Color + '">' + categorys[i] + '</span></b>' : categorys[i],
-                url: $('#noLoading#').lazyRule((listTab) => {
-                    putMyVar('BgCode$listTab', listTab);
-                    clearMyVar('BgCode$类型');
-                    clearMyVar('BgCode$地区');
-                    clearMyVar('BgCode$年代');
-                    clearMyVar('BgCode$资源');
-                    clearMyVar('BgCode$明星');
-                    clearMyVar('BgCode$排序');
-                    refreshPage(false);
-                    return "hiker://empty";
-                }, listTabs[i]),
-                col_type: 'scroll_button'
-            });
-        }
-
-        display.push({
             col_type: "blank_block"
         });
     }
