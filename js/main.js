@@ -1,61 +1,5 @@
 //一级菜单
 function Frist() {
-    // if (getMyVar('BgCode-VersionCheck', '0') == '0') {
-    //     Version();
-    // }
-    let datasource = getItem('BgCodesource', 'sougou');
-    const Color = "#3399cc";
-    const categorys = datasource == "sougou" ? ['电视剧', '电影', '动漫', '综艺', '纪录片'] : ['电视剧', '电影', '动漫', '综艺'];
-    const listTabs = datasource == "sougou" ? ['teleplay', 'film', 'cartoon', 'tvshow', 'documentary'] : ['2', '1', '4', '3']; //['/dianshi/list','/dianying/list','/dongman/list','/zongyi/list'];
-    const fold = getMyVar('BgCode$fold', "0");
-    const 类型 = getMyVar('BgCode$类型', '');
-    const 地区 = getMyVar('BgCode$地区', '');
-    const 年代 = getMyVar('BgCode$年代', '');
-    const 资源 = getMyVar('BgCode$资源', '');
-    const 明星 = getMyVar('BgCode$明星', '');
-    const 排序 = getMyVar('BgCode$排序', '');
-    let headers = {
-        'User-Agent': PC_UA
-    }
-    if (datasource == "sougou") {
-        MY_URL = "https://waptv.sogou.com/napi/video/classlist?abtest=0&iploc=CN1304&spver=&listTab=" + getMyVar('BgCode$listTab', 'teleplay') + "&filter=&start=" + (MY_PAGE - 1) * 15 + "&len=15&fr=filter";
-        if (类型 != "") {
-            MY_URL = MY_URL + "&style=" + 类型;
-        }
-        if (地区 != "") {
-            MY_URL = MY_URL + "&zone=" + 地区;
-        }
-        if (年代 != "") {
-            MY_URL = MY_URL + "&year=" + 年代;
-        }
-        if (资源 != "") {
-            MY_URL = MY_URL + "&fee=" + 资源;
-        }
-        if (明星 != "") {
-            MY_URL = MY_URL + "&emcee=" + 明星;
-        }
-        if (排序 != "") {
-            MY_URL = MY_URL + "&order=" + (排序 == "最新" ? "time" : "score");
-        }
-    } else {
-        MY_URL = "https://api.web.360kan.com/v1/filter/list?catid=" + getMyVar('BgCode$listTab', '2') + "&size=36&pageno=" + MY_PAGE;
-        if (排序 != "") {
-            MY_URL = MY_URL + "&rank=" + 排序;
-        }
-        if (类型 != "") {
-            MY_URL = MY_URL + "&cat=" + 类型;
-        }
-        if (地区 != "") {
-            MY_URL = MY_URL + "&area=" + 地区;
-        }
-        if (年代 != "") {
-            MY_URL = MY_URL + "&year=" + 年代;
-        }
-        if (明星 != "") {
-            MY_URL = MY_URL + "&act=" + 明星;
-        }
-        headers.Referer = "https://www.360kan.com";
-    }
     var display = [];
     if (MY_PAGE == 1) {
         if ($.type(storage0.getItem('buttonmenu1')) == "object") {
@@ -333,54 +277,25 @@ function Frist() {
             headers: headers
         }));
     }
-    var seachurl = $('').lazyRule(() => {
-        return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            require(config.conf.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/', '/master/') + 'SrcJyXunmi.js');
-            xunmi(name);
-        }, input);
-    });
-    let list = [];
-    if (datasource == "sougou") {
-        list = html.listData.results;
-        list = list.map(item => {
-            return {
-                name: item.name,
-                img: item.v_picurl,
-                url: "https://v.sogou.com" + item.url.replace('teleplay', 'series').replace('cartoon', 'series'),
-                desc: item.ipad_play_for_list.finish_episode ? item.ipad_play_for_list.episode == item.ipad_play_for_list.finish_episode ? "全集" + item.ipad_play_for_list.finish_episode : "连载" + item.ipad_play_for_list.episode + "/" + item.ipad_play_for_list.finish_episode : ""
-            };
-        })
-    } else if (datasource == "360") {
-        list = html.data ? html.data.movies : [];
-        list = list.map(item => {
-            return {
-                name: item.title,
-                img: /^http/.test(item.cdncover) ? item.cdncover : 'https:' + item.cdncover,
-                url: "https://api.web.360kan.com/v1/detail?cat=" + getMyVar('BgCode$listTab', '2') + "&id=" + item.id,
-                desc: item.total ? item.total == item.upinfo ? item.total + '集全' : '连载' + item.upinfo + "/" + item.total : item.tag ? item.tag : item.doubanscore ? item.doubanscore : ""
-            };
-        })
-    }
-// log("bgcode")
-    for (var i in list) {
-        display.push({
-            title: list[i].name,
-            img: list[i].img + '@Referer=',
-            url: "hiker://empty##" + list[i].url + "#immersiveTheme##autoCache#",
-            desc: list[i].desc,
-            extra: {
-                pic: list[i].img,
-                name: list[i].name,
-                datasource: getItem('BgCodesource', 'sougou'),
-            }
-        });
-    }
-
     setResult(display);
 }
 
 function Second(){
     let display=[]
+    var pic = MY_PARAMS.pic;
+    var name = MY_PARAMS.name;
+    var pic = MY_PARAMS.pic;
+    display.push({
+        title: name,//详情1
+        desc: details2,//详情2
+        pic_url: pic + '@Referer=',//图片
+        url: pic + '#noHistory#',//链接
+        col_type: 'movie_1_vertical_pic_blur',
+        extra: {
+            gradient: true
+        }
+
+    });
     var erjimenu = [
         {
             title: "剧情简介",
@@ -485,34 +400,4 @@ function Second(){
         clearMyVar('SrcJyDisk$back');
     }));
     setResult(display);
-}
-function Version() {
-    var nowVersion = getItem('Version', config.version); //现在版本 
-    var nowtime = Date.now();
-    var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
-    if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
-        try {
-            require(config.url + 'version_log.js')
-            require(config.url + 'js/tool.js')
-            if (compareVersions(nowVersion, newVersion.BgCode)) {
-                confirm({
-                    title: '发现新版本，是否更新？',
-                    content: nowVersion + '=>' + newVersion.BgCode + '\n' + newVersion.BgCodedesc[newVersion.BgCode],
-                    confirm: $.toString((nowtime, newVersion) => {
-                        setItem('Version', newVersion);
-                        setItem('VersionChecktime', nowtime + 'time');
-                        deleteCache();
-                        delete config.conf;
-                        refreshPage();
-                    }, nowtime, newVersion.BgCode),
-                    cancel: ''
-                })
-                log('检测到新版本！\n《V' + newVersion.BgCode + '版本》' + newVersion.BgCodedesc[newVersion.BgCode]);
-            }
-            putMyVar('BgCode-Version', '-V' + newVersion.BgCode);
-        } catch (e) {}
-        putMyVar('BgCode-VersionCheck', '1');
-    } else {
-        putMyVar('BgCode-Version', '-V' + nowVersion);
-    }
 }

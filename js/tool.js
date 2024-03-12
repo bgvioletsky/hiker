@@ -9,3 +9,35 @@ function compareVersions(v1, v2) {
   }
   return false; // 如果版本相等，则返回 false
 }
+
+
+function Version() {
+  var nowVersion = getItem('Version', config.version); //现在版本 
+  var nowtime = Date.now();
+  var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
+  if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
+      try {
+          require(config.url + 'version_log.js')
+          require(config.url + 'js/tool.js')
+          if (compareVersions(nowVersion, newVersion.BgCode)) {
+              confirm({
+                  title: '发现新版本，是否更新？',
+                  content: nowVersion + '=>' + newVersion.BgCode + '\n' + newVersion.BgCodedesc[newVersion.BgCode],
+                  confirm: $.toString((nowtime, newVersion) => {
+                      setItem('Version', newVersion);
+                      setItem('VersionChecktime', nowtime + 'time');
+                      deleteCache();
+                      delete config.conf;
+                      refreshPage();
+                  }, nowtime, newVersion.BgCode),
+                  cancel: ''
+              })
+              log('检测到新版本！\n《V' + newVersion.BgCode + '版本》' + newVersion.BgCodedesc[newVersion.BgCode]);
+          }
+          putMyVar('BgCode-Version', '-V' + newVersion.BgCode);
+      } catch (e) {}
+      putMyVar('BgCode-VersionCheck', '1');
+  } else {
+      putMyVar('BgCode-Version', '-V' + nowVersion);
+  }
+}
