@@ -1,8 +1,8 @@
 //一级菜单
 function Frist() {
-    if (getMyVar('BgCode-VersionCheck', '0') == '0') {
-        Version();
-    }
+    // if (getMyVar('BgCode-VersionCheck', '0') == '0') {
+    //     Version();
+    // }
     let datasource = getItem('BgCodesource', 'sougou');
     const Color = "#3399cc";
     const categorys = datasource == "sougou" ? ['电视剧', '电影', '动漫', '综艺', '纪录片'] : ['电视剧', '电影', '动漫', '综艺'];
