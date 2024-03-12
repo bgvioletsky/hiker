@@ -380,7 +380,7 @@ function Frist() {
 }
 
 function Version() {
-    var nowVersion = getItem('Version', "0.0.2"); //现在版本 
+    var nowVersion = getItem('Version', "0.0.3"); //现在版本 
     var nowtime = Date.now();
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
     if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
