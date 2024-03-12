@@ -361,7 +361,7 @@ function Frist() {
             };
         })
     }
-
+// log("bgcode")
     for (var i in list) {
         display.push({
             title: list[i].name,
