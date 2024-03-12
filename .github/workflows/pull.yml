@@ -21,17 +21,18 @@ jobs:
       - name: 设置变量
         id: compile
         run: |
-          release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
-          branch_name=$(echo ${release_info} | jq -r '.tag_name')
-          echo "version_ref=${branch_name}"
+          # release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          # branch_name=$(echo ${release_info} | jq -r '.tag_name')
+          # echo "version_ref=${branch_name}"
           version=$(bash version.sh)
           echo "version=$(bash version.sh)" >> $GITHUB_ENV
           echo "bgcode=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
-          if [ "$branch_name" = "$version" ]; then
-            result="false"
-          else
-            result="true"
-          fi
+          # if [ "$branch_name" = "$version" ]; then
+          #   result="false"
+          # else
+          #   result="true"
+          # fi
+          result="true"
           echo "relaese=${result}" >>$GITHUB_ENV
       - name: 创建发布文本
         if: env.relaese == 'true' && !cancelled()
