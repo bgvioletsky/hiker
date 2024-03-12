@@ -1,11 +1,12 @@
 name: Read Latest Release Branch
 
 on:
-    workflow_dispatch:
+  workflow_dispatch
+
 env:
-    TZ: Asia/Shanghai
-    UPLOAD_1: true 
-            
+  TZ: Asia/Shanghai
+  UPLOAD_1: true 
+
 jobs:
   build:
     name: 创建
@@ -17,15 +18,10 @@ jobs:
         id: get_release
         run: |
           release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
-          echo "release_info=${release_info}" >> $GITHUB_ENV
-
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          branch_name=$(echo ${{ env.release_info }} | jq -r '.name')
+          branch_name=$(echo ${release_info} | jq -r '.tag_name')
           echo "Latest release branch is $branch_name"
           echo "version=${branch_name}" >> $GITHUB_ENV
 
       - name: Use latest release branch name
         run: |
-          echo "Using latest release branch ${{ env.branch_name }}"
+          echo "Using latest release branch ${{ env.version }}"
