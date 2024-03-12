@@ -11,6 +11,8 @@ jobs:
     name: 创建
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Get latest release info
         id: get_release
         run: |
