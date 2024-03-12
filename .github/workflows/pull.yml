@@ -2,9 +2,9 @@ name: 发布版本
 
 on:
     workflow_dispatch:
-    push:
-        branches:
-            - main
+    # push:
+    #     branches:
+    #         - main
 env:
   TZ: Asia/Shanghai
   UPLOAD_1: true 

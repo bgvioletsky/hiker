@@ -1,0 +1,25 @@
+name: Read Latest Release Branch
+
+on:
+    workflow_dispatch:
+
+jobs:
+  read-latest-release-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest release info
+        id: get_release
+        run: |
+          release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          echo "::set-output name=release_info::${release_info}"
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          branch_name=$(echo ${{ steps.get_release.outputs.release_info }} | jq -r '.target_commitish')
+          echo "Latest release branch is $branch_name"
+          echo "##[set-output name=latest_release_branch;]$branch_name"
+
+      - name: Use latest release branch name
+        run: |
+          echo "Using latest release branch ${{ steps.extract_branch.outputs.latest_release_branch }}"

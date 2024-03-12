@@ -70,38 +70,38 @@ function Frist(){
         if($.type(storage0.getItem('buttonmenu5'))=="object"){
             setItem('buttonmenu5',storage0.getItem('buttonmenu5').name);
         }
-        let btnmn1 = getItem('buttonmenu1',"管理");
+        let btnmn1 = getItem('buttonmenu1',"设置");
         let btnmn2 = getItem('buttonmenu2',"收藏");
         let btnmn3 = getItem('buttonmenu5',"历史");
         let btnmn4 = getItem('buttonmenu3',"搜索");
         let btnmn5 = getItem('buttonmenu4',"展示");
         let buttonmenu={
-            "管理": {
-                img: "https://hikerfans.com/tubiao/more/129.png",
+            "设置": {
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/setting.svg",
                 url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                    require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'setting.js');
+                    require(config.conf.match(/http(s)?:\/\/.*\//)[0] + 'setting.js');
                     Setting();
                 })
             },
             "历史": {
-                img: "https://hikerfans.com/tubiao/more/213.png",
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/history.svg",
                 url: "hiker://history?rule="+MY_RULE.title
             },
             "收藏": {
-                img: "https://hikerfans.com/tubiao/more/109.png",
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/collection.svg",
                 url: "hiker://collection?rule="+MY_RULE.title
             },
             "搜索": {
-                img: "https://hikerfans.com/tubiao/more/101.png",
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/search.svg",
                 url: $("hiker://empty#noRecordHistory##noHistory#").rule(() => {
-                    require(config.依赖);
+                    require(config.conf);
                     Search();
                 })
             },
             "展示": {
-                img: "https://hikerfans.com/tubiao/more/105.png",
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/icon/show.svg",
                 url: $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
-                    require(config.依赖);
+                    require(config.conf);
                     Show();
                 })
             },
@@ -318,7 +318,7 @@ function Frist(){
     }
     var seachurl = $('').lazyRule(() => {
         return $('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
-            require(config.依赖.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/','/master/') + 'SrcJyXunmi.js');
+            require(config.conf.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/','/master/') + 'SrcJyXunmi.js');
             xunmi(name);
         }, input);
     });
@@ -368,7 +368,7 @@ function Version() {
     var oldtime = parseInt(getItem('VersionChecktime','0').replace('time',''));
     if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime+12*60*60*1000)) {
         try {
-            eval(request(config.依赖.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/','/master/') + 'SrcTmplVersion.js'))
+            eval(request(config.conf.match(/http(s)?:\/\/.*\//)[0].replace('/Ju/','/master/') + 'SrcTmplVersion.js'))
             if (parseFloat(newVersion.BgCode) > parseFloat(nowVersion)) {
                 confirm({
                     title:'发现新版本，是否更新？', 
@@ -377,7 +377,7 @@ function Version() {
                         setItem('Version', newVersion);
                         setItem('VersionChecktime', nowtime+'time');
                         deleteCache();
-                        delete config.依赖;
+                        delete config.conf;
                         refreshPage();
                     },nowtime, newVersion.BgCode),
                     cancel:''
