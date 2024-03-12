@@ -379,13 +379,120 @@ function Frist() {
     setResult(display);
 }
 
+function Second(){
+    let display=[]
+    var erjimenu = [
+        {
+            title: "剧情简介",
+            url: /\.sogou\./.test(MY_URL)?$('hiker://empty#noRecordHistory##noHistory#').rule((url) => {
+                    var d=[];
+                    var html = request(url, {headers:{ 'User-Agent': PC_UA }, timeout:3000 });
+                    var story=parseDomForHtml(html, 'body&&.srch-result-info&&Html').replace(/<\/a><a/g,',</a><a');
+                    for(let i = 0;;i++){
+                        try{
+                            d.push({
+                                title:parseDomForHtml(story, 'div,' +i+ '&&Text').replace('更多',''),
+                                col_type: 'rich_text'
+                            });
+                            d.push({
+                                col_type: 'line'
+                            });
+                        }catch(e){
+                            break;
+                        }
+                    };
+    
+                    try{
+                        var photos=parseDomForArray(html, '#photoList&&.sort_lst_bx&&a');
+                        if(photos.length>0){
+                            d.push({
+                                title: '剧照：',
+                                col_type: 'rich_text'
+                            });
+                            d.push({
+                                col_type: 'line'
+                            });
+                        }
+                        for(var i in photos){
+                            d.push({
+                                pic_url: parseDomForHtml(photos[i], 'img&&data-src'),
+                                url: 'hiker://empty',
+                                col_type: 'pic_1_full'
+                            });
+                            d.push({
+                                col_type: 'line'
+                            });
+                        }
+                    }catch(e){};
+                    setHomeResult(d);
+                }, MY_URL): $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                    setHomeResult([{
+                        title: '影片简介：\n' + getMyVar('moviedesc',''),
+                        col_type: 'long_text'
+                    }]);
+                }),
+            pic_url: 'https://hikerfans.com/tubiao/messy/32.svg',
+            col_type: 'icon_small_3'
+        },
+        {
+            title: "观影设置",
+            url: $('hiker://empty#noRecordHistory##noHistory#').rule(() => {
+                    require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJyMenu.js');
+                    lookset();
+                }),
+            pic_url: 'https://hikerfans.com/tubiao/messy/37.svg',
+            col_type: 'icon_small_3'
+        },
+        {
+            title: "更多片源",
+            url: !fileExist('hiker://files/rules/Src/Juying/jiekou.json')?"toast://分享页面或没有接口，无法扩展更多片源":getMyVar('SrcJy$back')=='1'?`#noLoading#@lazyRule=.js:back(false);'hiker://empty'`:$('hiker://empty#noRecordHistory##noHistory#').rule((name) => {
+                require(config.依赖.match(/http(s)?:\/\/.*\//)[0] + 'SrcJyXunmi.js');
+                xunmi(name);
+            }, MY_PARAMS.name),
+            pic_url: 'https://hikerfans.com/tubiao/messy/25.svg',
+            col_type: 'icon_small_3',
+            extra: {
+                key: MY_PARAMS.name,
+                longClick: [{
+                    title: "云盘君",
+                    js: $.toString(() => {
+                        return "#noHistory#hiker://page/soup?rule=云盘君";
+                    })
+                },{
+                    title: "云盘君.简",
+                    js: $.toString(() => {
+                        return "#noHistory#hiker://page/sou?p=fypage&rule=云盘君.简";
+                    })
+                }]
+            }
+        }
+    ]
+    for(var i in erjimenu){
+        display.push(
+            erjimenu[i]
+        )
+    }
+    display.push({
+        desc: '‘‘’’<small><font color=#f20c00>此规则仅限学习交流使用，请于导入后24小时内删除，任何团体或个人不得以任何方式方法传播此规则的整体或部分！</font></small>',
+        url: 'toast://温馨提示：且用且珍惜！',
+        col_type: 'text_center_1',
+        extra: {
+            id: "listloading",
+            lineVisible: false
+        }
+    });
+    addListener("onClose", $.toString(() => {
+        clearMyVar('SrcJyDisk$back');
+    }));
+    setResult(display);
+}
 function Version() {
     var nowVersion = getItem('Version', config.version); //现在版本 
     var nowtime = Date.now();
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
     if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
         try {
-            eval(request(config.url + 'version_log.js'))
+            require(config.url + 'version_log.js')
             require(config.url + 'js/tool.js')
             if (compareVersions(nowVersion, newVersion.BgCode)) {
                 confirm({
