@@ -99,7 +99,7 @@ function Frist(){
                 })
             },
             "展示": {
-                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/icon/show.svg",
+                img: "https://mirror.ghproxy.com/https://raw.githubusercontent.com/bgvioletsky/hiker/main/icon/show.svg",
                 url: $("hiker://empty##fypage#noRecordHistory##noHistory#").rule(() => {
                     require(config.conf);
                     Show();
