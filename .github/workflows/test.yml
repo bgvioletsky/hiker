@@ -16,7 +16,7 @@ jobs:
       - name: Extract branch name
         id: extract_branch
         run: |
-          branch_name=$(echo ${{ steps.get_release.outputs.release_info }} | jq -r '.target_commitish')
+          branch_name=$(echo ${{ steps.get_release.outputs.release_info }} | jq -r '.name')
           echo "Latest release branch is $branch_name"
           echo "##[set-output name=latest_release_branch;]$branch_name"
 
