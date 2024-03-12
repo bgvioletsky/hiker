@@ -28,30 +28,16 @@ jobs:
           echo "version=$(bash version.sh)" >> $GITHUB_ENV
           echo "bgcode=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
           if [ "$branch_name" = "$version" ]; then
-            result="true"
-          else
             result="false"
+          else
+            result="true"
           fi
           echo "relaese=${result}" >>$GITHUB_ENV
-    
-      - name: commit
-        if: env.relaese == 'true' && !cancelled()
-        run: |
-            git config --local user.email "${{ secrets.EMAIL }}"
-            git config --local user.name "${{ secrets.NAME }}"
-            git pull
-            git add version
-            git commit -m "update ${{ env.bgcode }}"  
-      - name:  Push changes
-        if: env.relaese == 'true' && !cancelled()
-        uses:  ad-m/github-push-action@master
-        with:  
-          branch: main
-          github_token: ${{ secrets.MY_GIT_TOKEN }}
       - name: 创建发布文本
         if: env.relaese == 'true' && !cancelled()
         run: |  
             echo "版本${{ env.version }}">> release.txt
+            echo "更新时间${{env.bgcode}}">> release.txt
       - name: 发布到release
         uses: softprops/action-gh-release@v1
         with:
