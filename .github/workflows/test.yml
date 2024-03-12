@@ -2,9 +2,13 @@ name: Read Latest Release Branch
 
 on:
     workflow_dispatch:
-
+env:
+    TZ: Asia/Shanghai
+    UPLOAD_1: true 
+            
 jobs:
-  read-latest-release-branch:
+  build:
+    name: 创建
     runs-on: ubuntu-latest
     steps:
       - name: Get latest release info
