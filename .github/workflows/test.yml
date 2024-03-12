@@ -19,7 +19,6 @@ jobs:
         run: |
           release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
           branch_name=$(echo ${release_info} | jq -r '.tag_name')
-          echo "Latest release branch is $branch_name"
           echo "version=${branch_name}" >> $GITHUB_ENV
 
       - name: Use latest release branch name
