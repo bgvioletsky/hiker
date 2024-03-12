@@ -380,7 +380,7 @@ function Frist() {
 }
 
 function Version() {
-    var nowVersion = getItem('Version', "0.0.3"); //现在版本 
+    var nowVersion = getItem('Version', config.version); //现在版本 
     var nowtime = Date.now();
     var oldtime = parseInt(getItem('VersionChecktime', '0').replace('time', ''));
     if (getMyVar('BgCode-VersionCheck', '0') == '0' && nowtime > (oldtime + 12 * 60 * 60 * 1000)) {
@@ -400,7 +400,7 @@ function Version() {
                     }, nowtime, newVersion.BgCode),
                     cancel: ''
                 })
-                log('检测到新版本！\nV' + newVersion.BgCode + '版本》' + newVersion.BgCodedesc[newVersion.BgCode]);
+                log('检测到新版本！\n《V' + newVersion.BgCode + '版本》' + newVersion.BgCodedesc[newVersion.BgCode]);
             }
             putMyVar('BgCode-Version', '-V' + newVersion.BgCode);
         } catch (e) {}
