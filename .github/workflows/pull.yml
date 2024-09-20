@@ -53,6 +53,7 @@ jobs:
       - name: 删除
         shell: bash
         run: |
+              rm -rf bgcode.txt
               current_run_id=$(echo "$GITHUB_RUN_ID")
               runs=$(curl -s -X GET "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pull.yml/runs" \
                 -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
