@@ -36,12 +36,13 @@ jobs:
            echo "version=$(bash version.sh)" >> $GITHUB_ENV
            echo "**发布时间：$(date +'%Y-%m-%d %H:%M:%S')**" >> bgcode.txt
            mv version .github/config/version
+           rm -rf version.sh
       - name: 创建发布文本
         run: |  
            git config --local user.email ${{ env.email }}
            git config --local user.name ${{ env.name }}
            git pull
-           git add .github/config/version
+           git add .
            git commit -m "Update $(date +'%Y-%m-%d %H:%M:%S')"
            git push
       - name: 发布到release
