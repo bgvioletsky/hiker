@@ -7,42 +7,61 @@ on:
     #         - main
 env:
   TZ: Asia/Shanghai
-  UPLOAD_1: true 
   
 jobs:
-  build:
+  release:
     name: 创建
     runs-on: ubuntu-latest
-
+    env:
+      url:     ${{ secrets.URL}}
+      email:   ${{ secrets.EMAIL }}
+      name:    ${{ secrets.NAME }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: 设置变量
-        id: compile
+      - name: 创建版本号
+        id: create_version
         run: |
-          release_info=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
-          branch_name=$(echo ${release_info} | jq -r '.tag_name')
-          echo "version_ref=${branch_name}"
-          version=$(bash version.sh)
-          localversion=$(cat version)
-          echo "version=$(bash version.sh)" >> $GITHUB_ENV
-          echo "bgcode=$(date +'%Y.%m.%d-%H:%M')" >> $GITHUB_ENV
-          if [ "$branch_name" == "v$localversion" ]; then
-            result="true"
-          else
-            result="false"
-          fi
-          echo "relaese=${result}" >>$GITHUB_ENV
+           if ! curl -L --silent --output ./version.sh ${{ env.url}}; then
+              echo "Failed to download the file."
+              exit 1
+           fi                 
+           if ! mv .github/config/version  version; then
+              mkdir -p .github/config
+              echo "Failed to move the file."
+              exit 1
+           fi
+           
+           echo "version=$(bash version.sh)" >> $GITHUB_ENV
+           echo "**发布时间：$(date +'%Y-%m-%d %H:%M:%S')**" >> bgcode.txt
+           mv version .github/config/version
       - name: 创建发布文本
-        if: env.relaese == 'true' && !cancelled()
         run: |  
-            echo "版本${{ env.version }}">> release.txt
-            echo "更新时间${{env.bgcode}}">> release.txt
+           git config --local user.email ${{ env.email }}
+           git config --local user.name ${{ env.name }}
+           git pull
+           git add .github/config/version
+           git commit -m "Update $(date +'%Y-%m-%d %H:%M:%S')"
+           git push
       - name: 发布到release
-        if: env.relaese == 'true' && !cancelled()
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.version }}
-          body_path: release.txt
-          files: ./js/*
+          body_path: bgcode.txt
+      - name: 删除
+        shell: bash
+        run: |
+              current_run_id=$(echo "$GITHUB_RUN_ID")
+              runs=$(curl -s -X GET "https://api.github.com/repos/${{ github.repository }}/actions/workflows/pull.yml/runs" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github.v3+json" | jq -r '.workflow_runs[].id')
+              echo "$runs"
+                  keep_runs=$(echo "$runs" | head -n 5)
+                  for run_id in $runs; do
+                    if [ "$run_id" != "$current_run_id" ] && [[ ! "$keep_runs" =~ "$run_id" ]]; then
+                      curl -s -X DELETE "https://api.github.com/repos/${{ github.repository }}/actions/runs/$run_id" \
+                        -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                        -H "Accept: application/vnd.github.v3+json" > /dev/null
+                    fi
+                  done
