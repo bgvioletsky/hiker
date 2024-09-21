@@ -757,11 +757,20 @@ function Frist() {
         }
     ]
     var searchurl = $('').lazyRule(() => {
-            require(config.依赖);
-            sousuo(input);
+        require(config.依赖);
+        sousuo(input);
     })
     bg = [gender, area, end, explicit, tag, sort]
     if (MY_PAGE == 1) {
+        display.push(
+            {
+                title: "收藏", url: "hiker://collection", pic_url: "hiker://files/bgHouse/src/system/1.svg", col_type: "icon_2"
+            }, {
+            title: "历史", url: "hiker://history", pic_url: "hiker://files/bgHouse/src/system/4.svg", col_type: "icon_2"
+        }, {
+            col_type: "blank_block"
+        }
+        )
         for (var i in bg) {
             for (var j in bg[i]) {
                 display.push({
@@ -788,7 +797,7 @@ function Frist() {
                 return $("hiker://empty#noRecordHistory##noHistory##fypage").rule((input) => {
                     require(config.依赖);
                     sousuo(input);
-                },input);
+                }, input);
 
             }),
         })
@@ -831,7 +840,7 @@ function Second() {
     var name = MY_PARAMS.title;
     var url = MY_PARAMS.url;
     var desc = MY_PARAMS.desc;
-    
+
     display.push({
         title: name,//详情1
         desc: desc,//详情2
@@ -992,7 +1001,7 @@ function getImg(result) {
 
 function sousuo(name) {
     let display = [];
-    let url = "https://manwac2.xyz/search?keyword=" + name+"&page="+MY_PAGE;
+    let url = "https://manwac2.xyz/search?keyword=" + name + "&page=" + MY_PAGE;
     let data = request(url, {
         headers: {
             "referer": "https://mwcomic3.online/",
@@ -1000,10 +1009,10 @@ function sousuo(name) {
             "cookie": "ckc=1; 0338f6aad17636a90fcff738ec241c5b=587eab99869888fc42ddec8de2c5b9ad; PHPSESSID=6cd3600b489270a3d58072af62fa25b1; show_img_host2=1; c_gender=2"
         }, timeout: 3000
     })
-    let img_url=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-info']/a/@href")
-    let title=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-title']/text()")
-    let pic=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-cover']/a/img/@data-original")
-    let desc=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-desc']/text()")
+    let img_url = xpathArray(data, "//ul[@class='book-list']/li/div[@class='book-list-info']/a/@href")
+    let title = xpathArray(data, "//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-title']/text()")
+    let pic = xpathArray(data, "//ul[@class='book-list']/li/div[@class='book-list-cover']/a/img/@data-original")
+    let desc = xpathArray(data, "//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-desc']/text()")
     for (var i in img_url) {
         display.push({
             title: title[i],
@@ -1014,12 +1023,12 @@ function sousuo(name) {
             desc: desc[i],
             pic_url: pic[i],
             col_type: 'movies_3',
-            extra:{
+            extra: {
                 gradient: true,
-                title:title[i],
-                desc:desc[i],
-                pic:pic[i],
-                url:'https://manwac2.xyz/'+img_url[i],
+                title: title[i],
+                desc: desc[i],
+                pic: pic[i],
+                url: 'https://manwac2.xyz/' + img_url[i],
             }
         })
     }
