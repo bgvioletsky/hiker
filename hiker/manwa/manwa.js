@@ -772,7 +772,6 @@ function Frist() {
                     url: $("#noLoading#").lazyRule((a, b) => {
                         putMyVar("mainindex" + a, b);
                         refreshPage(true);
-                        log(getMyVar("mainindex" + a, "0"))
                         return "hiker://empty";
                     }, i, j),
                     col_type: "scroll_button"
@@ -786,7 +785,7 @@ function Frist() {
             title: "搜索",
             col_type: "input",
             url: $.toString(() => {
-                return $("hiker://empty#noRecordHistory##noHistory#").rule((input) => {
+                return $("hiker://empty#noRecordHistory##noHistory##fypage").rule((input) => {
                     require(config.依赖);
                     sousuo(input);
                 },input);
@@ -832,6 +831,7 @@ function Second() {
     var name = MY_PARAMS.title;
     var url = MY_PARAMS.url;
     var desc = MY_PARAMS.desc;
+    
     display.push({
         title: name,//详情1
         desc: desc,//详情2
@@ -935,8 +935,6 @@ function Second() {
 
                     let images = decryptPhotos(encryptedPhotos, key)
                     var list = images
-                    log(list)
-
 
                     var pics = [];
                     list.forEach(x => {
@@ -994,7 +992,7 @@ function getImg(result) {
 
 function sousuo(name) {
     let display = [];
-    let url = "https://manwac2.xyz/search?keyword=" + name
+    let url = "https://manwac2.xyz/search?keyword=" + name+"&page="+MY_PAGE;
     let data = request(url, {
         headers: {
             "referer": "https://mwcomic3.online/",
@@ -1006,14 +1004,23 @@ function sousuo(name) {
     let title=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-title']/text()")
     let pic=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-cover']/a/img/@data-original")
     let desc=xpathArray(data,"//ul[@class='book-list']/li/div[@class='book-list-info']/a/p[@class='book-list-info-desc']/text()")
-    log(title)
     for (var i in img_url) {
         display.push({
             title: title[i],
-            url: img_url[i],
+            url: $("hiker://empty#noRecordHistory##noHistory##immersiveTheme##autoCache#").rule(() => {
+                require(config.依赖);
+                Second();
+            }),
             desc: desc[i],
             pic_url: pic[i],
-            col_type: 'movies_3'
+            col_type: 'movies_3',
+            extra:{
+                gradient: true,
+                title:title[i],
+                desc:desc[i],
+                pic:pic[i],
+                url:'https://manwac2.xyz/'+img_url[i],
+            }
         })
     }
     setResult(display);

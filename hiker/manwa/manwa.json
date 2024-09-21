@@ -23,7 +23,7 @@
     "sdetail_col_type": "movie_1",
     "sdetail_find_rule": "",
     "ua": "mobile",
-    "preRule": "    initConfig({\n\t    依赖:'https://cdn.jsdelivr.net/gh/bgvioletsky/hiker@0.0.11/hiker/manwa/manwa.js'\n    });\n",
+    "preRule": "    initConfig({\n\t    依赖:'https://cdn.jsdelivr.net/gh/bgvioletsky/hiker@0.0.12/hiker/manwa/manwa.js'\n    });\n",
     "pages": "[]",
     "icon": "",
     "proxy": ""
